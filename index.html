@@ -1,336 +1,36 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <title>Verbes aléatoires</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            text-align: center;
-            background: linear-gradient(45deg, #ff6b6b, #f1c40f, #1abc9c);
-            background-size: 400% 400%;
-            animation: backgroundWaves 10s infinite linear;
-            margin: 50px;
-        }
-
-        @keyframes backgroundWaves {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        h1 {
-            color: white;
-            font-size: 2.5rem;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        table {
-            margin: auto;
-            border-collapse: collapse;
-            width: 70%;
-            background: white;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-            overflow: hidden;
-            animation: tableAnimation 1.5s ease-out;
-        }
-
-        @keyframes tableAnimation {
-            from { transform: scale(0.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 15px;
-            text-align: center;
-            font-size: 1.1rem;
-            color: #333;
-        }
-
-        th {
-            background-color: #2196f3;
-            color: white;
-        }
-
-        input {
-            width: 90%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 2px solid #ddd;
-            font-size: 1rem;
-            text-align: center;
-        }
-
-        button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            margin: 20px 10px;
-            border: none;
-            border-radius: 30px;
-            background-color: #2196f3;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        button:hover {
-            background-color: #0069d9;
-            transform: scale(1.05);
-        }
-
-        #result {
-            font-size: 1.5rem;
-            margin-top: 20px;
-        }
-
-        .correct {
-            color: #27ae60;
-        }
-
-        .incorrect {
-            color: #e74c3c;
-        }
-
-        .emoji {
-            font-size: 2rem;
-            cursor: pointer;
-        }
-
-        /* Style de la modale */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
-            padding-top: 60px;
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 60%;
-            border-radius: 10px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        #verbList {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        #verbList li {
-            cursor: pointer;
-            padding: 5px;
-            background: #f0f0f0;
-            margin-bottom: 5px;
-            border-radius: 5px;
-        }
-
-        #verbList li:hover {
-            background: #e0e0e0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Intro</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
+    video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
+  </style>
 </head>
 <body>
+  <video id="introVideo" autoplay muted playsinline>
+    <source src="https://cdn.pixabay.com/video/2025/04/23/273941.mp4" type="video/mp4">
+    Votre navigateur ne supporte pas la lecture vidéo.
+  </video>
 
-    <h1>Test sur les verbes irréguliers</h1>
-
-    <!-- Emoji pour ouvrir la modale -->
-    <button onclick="openModal()">Modifier les verbes</button>
-
-
-    <table>
-        <thead>
-            <tr>
-                <th>Infinitif</th>
-                <th>Prétérit</th>
-                <th>Participe Passé</th>
-                <th>Traduction</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td id="baseCell"></td>
-                <td id="pastCell"></td>
-                <td id="ppCell"></td>
-                <td id="transCell"></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <button onclick="generateRandomVerb()">Relancer le verbe</button>
-    <button onclick="checkAnswers()">Corriger</button>
-    <button onclick="showFullTable()">Générer le tableau</button>
-
-    <p id="result"></p>
-
-    <br><br>
-
-    <table id="fullTable" style="display:none;">
-        <thead>
-            <tr>
-                <th>Infinitif</th>
-                <th>Prétérit</th>
-                <th>Participe Passé</th>
-                <th>Traduction</th>
-            </tr>
-        </thead>
-        <tbody id="fullTableBody"></tbody>
-    </table>
-
-    <!-- Modale -->
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Ajouter ou Supprimer un verbe</h2>
-            <h3>Ajouter un verbe</h3>
-            <input id="newBase" placeholder="Infinitif"><br><br>
-            <input id="newPast" placeholder="Prétérit"><br><br>
-            <input id="newPP" placeholder="Participe Passé"><br><br>
-            <input id="newTrans" placeholder="Traduction"><br><br>
-            <button onclick="addVerb()">Ajouter le verbe</button>
-            <h3>Supprimer un verbe</h3>
-            <ul id="verbList"></ul>
-            <button onclick="closeModal()">Fermer</button>
-        </div>
-    </div>
-
-    <script>
-        const verbs = [
-            { base: "give", past: "gave", pastParticiple: "given", translation: "donner" },
-            { base: "ride", past: "rode", pastParticiple: "ridden", translation: "faire du vélo/cheval" },
-            { base: "see", past: "saw", pastParticiple: "seen", translation: "voir" },
-            { base: "shake", past: "shook", pastParticiple: "shaken", translation: "trembler/secouer" },
-            { base: "speak", past: "spoke", pastParticiple: "spoken", translation: "parler" },
-            { base: "steal", past: "stole", pastParticiple: "stolen", translation: "voler/dérober" },
-            { base: "take", past: "took", pastParticiple: "taken", translation: "prendre" },
-            { base: "wake", past: "woke", pastParticiple: "woken", translation: "se réveiller" },
-            { base: "write", past: "wrote", pastParticiple: "written", translation: "écrire" },
-            { base: "do", past: "did", pastParticiple: "done", translation: "faire" },
-            { base: "go", past: "went", pastParticiple: "gone", translation: "aller" }
-        ];
-
-        let currentVerb;
-        let hiddenIndices;
-
-        // Générer un verbe aléatoire
-        function generateRandomVerb() {
-            currentVerb = verbs[Math.floor(Math.random() * verbs.length)];
-            hiddenIndices = [0, 1, 2, 3].sort(() => 0.5 - Math.random()).slice(0, 3);
-
-            document.getElementById("baseCell").innerHTML = hiddenIndices.includes(0) ? '<input id="inputBase">' : currentVerb.base;
-            document.getElementById("pastCell").innerHTML = hiddenIndices.includes(1) ? '<input id="inputPast">' : currentVerb.past;
-            document.getElementById("ppCell").innerHTML = hiddenIndices.includes(2) ? '<input id="inputPP">' : currentVerb.pastParticiple;
-            document.getElementById("transCell").innerHTML = hiddenIndices.includes(3) ? '<input id="inputTrans">' : currentVerb.translation;
-
-            document.getElementById("result").textContent = "";
-        }
-
-        // Vérifier les réponses
-        function checkAnswers() {
-            const base = document.getElementById("inputBase")?.value.trim();
-            const past = document.getElementById("inputPast")?.value.trim();
-            const pp = document.getElementById("inputPP")?.value.trim();
-            const trans = document.getElementById("inputTrans")?.value.trim();
-
-            let res = "";
-            if (hiddenIndices.includes(0)) res += (base === currentVerb.base ? "✅" : "❌") + " ";
-            if (hiddenIndices.includes(1)) res += (past === currentVerb.past ? "✅" : "❌") + " ";
-            if (hiddenIndices.includes(2)) res += (pp === currentVerb.pastParticiple ? "✅" : "❌") + " ";
-            if (hiddenIndices.includes(3)) res += (trans === currentVerb.translation ? "✅" : "❌");
-
-            document.getElementById("result").textContent = res;
-        }
-
-        // Afficher le tableau complet
-        function showFullTable() {
-            const tbody = document.getElementById("fullTableBody");
-            tbody.innerHTML = "";
-
-            verbs.forEach(v => {
-                const shownIndex = Math.floor(Math.random() * 4);
-                const row = 
-                    <tr>
-                        <td>${shownIndex === 0 ? v.base : ""}</td>
-                        <td>${shownIndex === 1 ? v.past : ""}</td>
-                        <td>${shownIndex === 2 ? v.pastParticiple : ""}</td>
-                        <td>${shownIndex === 3 ? v.translation : ""}</td>
-                    </tr>
-                ;
-                tbody.innerHTML += row;
-            });
-
-            document.getElementById("fullTable").style.display = "table";
-        }
-
-        // Ouvrir la modale
-        function openModal() {
-            document.getElementById("myModal").style.display = "block";
-            updateVerbList();
-        }
-
-        // Fermer la modale
-        function closeModal() {
-            document.getElementById("myModal").style.display = "none";
-        }
-
-        // Ajouter un verbe
-        function addVerb() {
-            const newVerb = {
-                base: document.getElementById("newBase").value.trim(),
-                past: document.getElementById("newPast").value.trim(),
-                pastParticiple: document.getElementById("newPP").value.trim(),
-                translation: document.getElementById("newTrans").value.trim()
-            };
-
-            verbs.push(newVerb);
-            closeModal();
-        }
-
-        // Mettre à jour la liste des verbes pour suppression
-        function updateVerbList() {
-            const verbList = document.getElementById("verbList");
-            verbList.innerHTML = "";
-            verbs.forEach((verb, index) => {
-                const li = document.createElement("li");
-                li.textContent = verb.base;
-                li.onclick = () => deleteVerb(index);
-                verbList.appendChild(li);
-            });
-        }
-
-        // Supprimer un verbe
-        function deleteVerb(index) {
-            verbs.splice(index, 1);
-            updateVerbList();
-        }
-    </script>
-
+  <script>
+    // Attend 5 secondes, puis redirige
+    setTimeout(() => {
+      window.location.href = "start.html";
+    }, 5000);
+  </script>
 </body>
 </html>
-
-
