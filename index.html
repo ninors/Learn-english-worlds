@@ -94,11 +94,74 @@
         .incorrect {
             color: #e74c3c;
         }
+
+        .emoji {
+            font-size: 2rem;
+            cursor: pointer;
+        }
+
+        /* Style de la modale */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #verbList {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #verbList li {
+            cursor: pointer;
+            padding: 5px;
+            background: #f0f0f0;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        #verbList li:hover {
+            background: #e0e0e0;
+        }
     </style>
 </head>
 <body>
 
     <h1>Test sur les verbes irréguliers</h1>
+
+    <!-- Emoji pour ouvrir la modale -->
+    <button onclick="openModal()">Modifier les verbes</button>
+
 
     <table>
         <thead>
@@ -139,6 +202,23 @@
         <tbody id="fullTableBody"></tbody>
     </table>
 
+    <!-- Modale -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Ajouter ou Supprimer un verbe</h2>
+            <h3>Ajouter un verbe</h3>
+            <input id="newBase" placeholder="Infinitif"><br><br>
+            <input id="newPast" placeholder="Prétérit"><br><br>
+            <input id="newPP" placeholder="Participe Passé"><br><br>
+            <input id="newTrans" placeholder="Traduction"><br><br>
+            <button onclick="addVerb()">Ajouter le verbe</button>
+            <h3>Supprimer un verbe</h3>
+            <ul id="verbList"></ul>
+            <button onclick="closeModal()">Fermer</button>
+        </div>
+    </div>
+
     <script>
         const verbs = [
             { base: "give", past: "gave", pastParticiple: "given", translation: "donner" },
@@ -157,6 +237,7 @@
         let currentVerb;
         let hiddenIndices;
 
+        // Générer un verbe aléatoire
         function generateRandomVerb() {
             currentVerb = verbs[Math.floor(Math.random() * verbs.length)];
             hiddenIndices = [0, 1, 2, 3].sort(() => 0.5 - Math.random()).slice(0, 3);
@@ -169,6 +250,7 @@
             document.getElementById("result").textContent = "";
         }
 
+        // Vérifier les réponses
         function checkAnswers() {
             const base = document.getElementById("inputBase")?.value.trim();
             const past = document.getElementById("inputPast")?.value.trim();
@@ -184,28 +266,72 @@
             document.getElementById("result").textContent = res;
         }
 
+        // Afficher le tableau complet
         function showFullTable() {
             const tbody = document.getElementById("fullTableBody");
             tbody.innerHTML = "";
 
             verbs.forEach(v => {
                 const shownIndex = Math.floor(Math.random() * 4);
-                const row = `
+                const row = 
                     <tr>
                         <td>${shownIndex === 0 ? v.base : ""}</td>
                         <td>${shownIndex === 1 ? v.past : ""}</td>
                         <td>${shownIndex === 2 ? v.pastParticiple : ""}</td>
                         <td>${shownIndex === 3 ? v.translation : ""}</td>
                     </tr>
-                `;
+                ;
                 tbody.innerHTML += row;
             });
 
             document.getElementById("fullTable").style.display = "table";
         }
 
-        // Initialisation
-        generateRandomVerb();
+        // Ouvrir la modale
+        function openModal() {
+            document.getElementById("myModal").style.display = "block";
+            updateVerbList();
+        }
+
+        // Fermer la modale
+        function closeModal() {
+            document.getElementById("myModal").style.display = "none";
+        }
+
+        // Ajouter un verbe
+        function addVerb() {
+            const newVerb = {
+                base: document.getElementById("newBase").value.trim(),
+                past: document.getElementById("newPast").value.trim(),
+                pastParticiple: document.getElementById("newPP").value.trim(),
+                translation: document.getElementById("newTrans").value.trim()
+            };
+
+            verbs.push(newVerb);
+            closeModal();
+        }
+
+        // Mettre à jour la liste des verbes pour suppression
+        function updateVerbList() {
+            const verbList = document.getElementById("verbList");
+            verbList.innerHTML = "";
+            verbs.forEach((verb, index) => {
+                const li = document.createElement("li");
+                li.textContent = verb.base;
+                li.onclick = () => deleteVerb(index);
+                verbList.appendChild(li);
+            });
+        }
+
+        // Supprimer un verbe
+        function deleteVerb(index) {
+            verbs.splice(index, 1);
+            updateVerbList();
+        }
     </script>
+
 </body>
 </html>
+
+
+
