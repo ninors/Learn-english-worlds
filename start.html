@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Intro</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
+    video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+  <video id="introVideo" autoplay muted playsinline>
+    <source src="https://cdn.pixabay.com/video/2025/04/23/273941.mp4" type="video/mp4">
+    Votre navigateur ne supporte pas la lecture vidéo.
+  </video>
+
+  <script>
+    // Attend 5 secondes, puis redirige
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 5000);
+  </script>
+</body>
+</html>
